@@ -1,0 +1,14 @@
+// вид таблиц для базы данных
+
+create table tamagotchi.public.users(
+	user_id serial primary key,
+	user_name text not null unique
+);
+
+create table tamagotchi.public.pets(
+	pet_owner text not null,
+	pet_animal text not null,
+	pet_name text not null,
+	pet_health text not null,
+	foreign key (pet_owner) references tamagotchi.public.users(user_name)
+);
