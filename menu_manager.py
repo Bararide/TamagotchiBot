@@ -23,4 +23,9 @@ new_pet = InlineKeyboardMarkup(resize_keyboard=True, row_width=1).add(c2)
 c1 = KeyboardButton(text = 'Да', request_location = True)
 c2 = KeyboardButton(text = 'Нет', request_location = False)
 
-choose = ReplyKeyboardMarkup(resize_keyboard=True).add(c1,c2)
+c3 = KeyboardButton(text = 'Да')
+c4 = KeyboardButton(text = 'Нет')
+
+choose = ReplyKeyboardMarkup(resize_keyboard=True).add(c3,c4)
+
+choose_geo = ReplyKeyboardMarkup(resize_keyboard=True).add(c1,c2)
