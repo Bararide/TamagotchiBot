@@ -1,7 +1,5 @@
 import psycopg2 as ps
 
-from pet_container import Pet
-
 class database_handler:
 
     def __init__(self) -> None:
@@ -14,65 +12,159 @@ class database_handler:
 
         self.connection.autocommit = True 
 
-    def include_coordinate(self, pet: Pet) -> None:
+    def set_owner(self, user_id: str) -> None:
         with self.connection.cursor() as cursor:
             try:
                 cursor.execute(
-                    f"UPDATE tamagotchi.public.pets SET latitude = '{pet.latitude}', longitude = '{pet.longitude}' where pet_owner = '{pet.owner}';"
+                    f"INSERT INTO tamagotchi.public.pets (pet_owner) values ('{user_id}');"
+                )
+
+            except Exception as e:
+                print(f"Error {e}")
+
+    def set_animal(self, animal: str, user_id: str) -> None:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"UPDATE tamagotchi.public.pets SET pet_animal = '{str(animal)}' WHERE pet_owner = '{user_id}';"
+                )
+
+            except Exception as e:
+                print(f"Error {e}")
+
+    def set_name(self, name: str, user_id: str) -> None:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"UPDATE tamagotchi.public.pets SET pet_name = '{str(name)}' where pet_owner = '{user_id}';"
+                )
+
+            except Exception as e:
+                print(f"Error {e}")
+
+    def set_health(self, health: str, user_id: str) -> None:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"UPDATE tamagotchi.public.pets SET pet_health = '{str(health)}' where pet_owner = '{user_id}';"
+                )
+
+            except Exception as e:
+                print(f"Error {e}")
+
+    def set_photo(self, photo_id: str, user_id: str):
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"UPDATE tamagotchi.public.pets SET pet_photo = '{photo_id}' where pet_owner = '{user_id}';"
                 )
             except Exception as e:
                 print(e)
 
-    def create(self, pet: Pet) -> None:
-        with self.connection.cursor() as cursor:
-            try:
-                pet.latitude = None
-                pet.longitude = None
-                cursor.execute(
-                    f"insert into tamagotchi.public.users(user_name) values('{pet.owner}')"
-                )
-
-                cursor.execute(
-                    f"insert into tamagotchi.public.pets(pet_owner, pet_animal, pet_name, pet_health) values('{pet.owner}', '{pet.animal}', '{pet.pet_name}', '{pet.health}')"
-                )
-
-                cursor.execute(
-                    "select * from tamagotchi.public.users"
-                )
-                users = cursor.fetchall()
-                for user in users:
-                    print(user)
-
-            except Exception as e:
-                print(f"Error {e}")
-
-    def create_pet(self, pet: Pet, userid: str) -> Pet:
-        with self.connection.cursor() as cursor:           
-            try:
-                cursor.execute(
-                    f"select * from tamagotchi.public.pets where pet_owner = '{userid}'"
-                )
-                result = cursor.fetchone()
-                pet.owner = result[0]
-                pet.animal = result[1]
-                pet.pet_name = result[2]
-                pet.health = result[3]
-                pet.latitude = result[4]
-                pet.longitude= result[5]
-            except Exception as e:
-                print(f"Error {e}")
-
-    def check(self, text: str) -> bool:
+    def set_lotitude(self, lotitude: str, user_id: str):
         with self.connection.cursor() as cursor:
             try:
                 cursor.execute(
-                    f"select user_name from tamagotchi.public.users where user_name = '{text}';"
+                    f"UPDATE tamagotchi.public.pets SET latitude = '{lotitude}' where pet_owner = '{user_id}';"
+                )
+            except Exception as e:
+                print(e)
+
+    def set_longitude(self, longitude: str, user_id: str):
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"UPDATE tamagotchi.public.pets SET longitude = '{longitude}' where pet_owner = '{user_id}';"
+                )
+            except Exception as e:
+                print(e)
+
+    def get_animal(self, user_id: str) -> str:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select pet_animal from tamagotchi.public.pets where pet_owner = '{user_id}';"
+                )
+
+                return str(cursor.fetchone()[0])
+
+            except Exception as e:
+                print(f"Error {e}")
+                return None
+
+    def get_name(self, user_id: str) -> str:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select pet_name from tamagotchi.public.pets where pet_owner = '{user_id}';"
+                )
+
+                return str(cursor.fetchone()[0])
+
+            except Exception as e:
+                print(f"Error {e}")
+                return None
+
+    def get_health(self, user_id: str) -> str:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select pet_health from tamagotchi.public.pets where pet_owner = '{user_id}';"
+                )
+                return str(cursor.fetchone()[0])
+
+            except Exception as e:
+                print(f"Error {e}")
+                return None
+            
+    def get_photo(self, user_id: str) -> str:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select pet_photo from tamagotchi.public.pets where pet_owner = '{user_id}';"
+                )
+                return str(cursor.fetchone()[0])
+
+            except Exception as e:
+                print(f"Error {e}")
+                return None
+
+
+    def check_id(self, text: str) -> bool:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select pet_owner from tamagotchi.public.pets where pet_owner = '{text}';"
                 )
                 if(str(cursor.fetchone())) == "None":
-                    print(cursor.fetchone())
-                    return True
-                else: 
-                    print(cursor.fetchone())
                     return False
+                else: 
+                    return True
+            except Exception as e:
+                print(f"Error {e}")
+
+    def check_photo(self, text: str) -> bool:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select pet_photo from tamagotchi.public.pets where pet_owner = '{text}';"
+                )
+                if(str(cursor.fetchone()[0])) == "None":
+                    return False
+                else:
+                    return True
+            except Exception as e:
+                print(f"Error {e}")
+
+    def check_latitude(self, text: str) -> bool:
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(
+                    f"select latitude from tamagotchi.public.pets where pet_owner = '{text}';"
+                )
+                if(str(cursor.fetchone()[0])) == "None":
+                    return False
+                else:
+                    return True
             except Exception as e:
                 print(f"Error {e}")
