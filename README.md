@@ -1,1 +1,1 @@
-# Tamagotchi_BOT
+# TamagotchiBot
